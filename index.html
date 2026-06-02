@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Hologram Canvas | Blank Template</title>
+  <title>Zonato Solar | Renewable Energy Solutions</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * {
@@ -30,7 +30,7 @@
       position: absolute;
       width: 500px;
       height: 500px;
-      background: radial-gradient(circle, rgba(0, 255, 255, 0.08), transparent 70%);
+      background: radial-gradient(circle, rgba(255, 180, 0, 0.1), transparent 70%);
       top: 20%;
       left: 15%;
       pointer-events: none;
@@ -41,7 +41,7 @@
       position: absolute;
       width: 600px;
       height: 600px;
-      background: radial-gradient(circle, rgba(240, 0, 255, 0.05), transparent 70%);
+      background: radial-gradient(circle, rgba(0, 255, 200, 0.08), transparent 70%);
       bottom: 10%;
       right: 10%;
       pointer-events: none;
@@ -61,7 +61,7 @@
 
     .holo-particle {
       position: absolute;
-      background: radial-gradient(circle, #0ff, #f0f);
+      background: radial-gradient(circle, #ffd700, #ffb400);
       width: 5px;
       height: 5px;
       border-radius: 50%;
@@ -75,6 +75,153 @@
       0% { transform: translateX(0) translateY(0) scale(1); opacity: 0.2; }
       100% { transform: translateX(25px) translateY(-20px) scale(1.6); opacity: 0.9; }
     }
+
+    /* Main content container */
+    .content-container {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      max-width: 800px;
+      animation: fadeIn 1s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+    }
+
+    .title {
+      font-size: 3.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffd700, #00ffc8, #ffd700);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      animation: gradientShift 4s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .subtitle {
+      font-size: 1.3rem;
+      color: rgba(0, 255, 200, 0.9);
+      margin-bottom: 2rem;
+      font-weight: 300;
+      letter-spacing: 2px;
+    }
+
+    .description {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 2.5rem;
+      line-height: 1.8;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.9rem 2.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: 2px solid;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Space Grotesk', sans-serif;
+      letter-spacing: 1px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ffd700, #ffb400);
+      color: #000;
+      border-color: #ffd700;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 40px rgba(255, 215, 0, 0.8);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #00ffc8;
+      border-color: #00ffc8;
+      box-shadow: 0 0 15px rgba(0, 255, 200, 0.3);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-3px);
+      background: rgba(0, 255, 200, 0.1);
+      box-shadow: 0 0 30px rgba(0, 255, 200, 0.6);
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 3rem;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #ffd700;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .title {
+        font-size: 2.5rem;
+      }
+
+      .subtitle {
+        font-size: 1rem;
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .btn {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -82,6 +229,37 @@
   <div class="ambient-glow"></div>
   <div class="ambient-glow-2"></div>
   <div class="diffraction-field" id="particleField"></div>
+
+  <div class="content-container">
+    <div class="logo">☀️</div>
+    <h1 class="title">ZONATO SOLAR</h1>
+    <p class="subtitle">RENEWABLE ENERGY SOLUTIONS</p>
+    
+    <p class="description">
+      Harness the power of the sun with Zonato Solar's cutting-edge renewable energy technology. 
+      Transform your energy future today.
+    </p>
+
+    <div class="cta-buttons">
+      <button class="btn btn-primary">Get Started</button>
+      <button class="btn btn-secondary">Learn More</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-number">50K+</div>
+        <div class="stat-label">Active Systems</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">2.5M</div>
+        <div class="stat-label">Tons CO₂ Saved</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">99.9%</div>
+        <div class="stat-label">Uptime</div>
+      </div>
+    </div>
+  </div>
 
 <script>
   (function() {
@@ -99,14 +277,14 @@
         particle.style.animationDelay = Math.random() * 4 + 's';
         particle.style.animationDuration = Math.random() * 3 + 2 + 's';
         
-        // Randomize between cyan, magenta, and gold light tints
+        // Solar-themed colors: gold/yellow and cyan
         const roll = Math.random();
         if (roll > 0.6) {
-          particle.style.background = 'radial-gradient(circle, #0ffff, rgba(0,255,255,0.2))';
+          particle.style.background = 'radial-gradient(circle, #ffd700, rgba(255,215,0,0.2))';
         } else if (roll > 0.3) {
-          particle.style.background = 'radial-gradient(circle, #f0f, rgba(240,0,255,0.2))';
+          particle.style.background = 'radial-gradient(circle, #00ffc8, rgba(0,255,200,0.2))';
         } else {
-          particle.style.background = 'radial-gradient(circle, #ffbc4a, rgba(255,188,74,0.2))';
+          particle.style.background = 'radial-gradient(circle, #ffb400, rgba(255,180,0,0.2))';
         }
         
         particleField.appendChild(particle);
@@ -116,4 +294,3 @@
 </script>
 </body>
 </html>
-

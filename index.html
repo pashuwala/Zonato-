@@ -1,1 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>4D Business Card | AR Handshake Experience</title>
+  <!-- Google Fonts & Smooth Font Rendering -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none; /* optional: prevents selection for cleaner card feel */
+    }
 
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at 20% 30%, #0a0f1c, #03060c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', sans-serif;
+      padding: 1.5rem;
+      cursor: default;
+    }
+
+    /* main card container — acts like a real business card with depth */
+    .business-card {
+      max-width: 800px;
+      width: 100%;
+      background: linear-gradient(145deg, #11161f 0%, #0b0f17 100%);
+      border-radius: 2rem;
+      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 215, 0, 0.2) inset, 0 0 0 2px rgba(0, 255, 255, 0.05) inset;
+      transition: transform 0.3s ease, box-shadow 0.4s ease;
+      backdrop-filter: blur(1px);
+    }
+
+    .business-card:hover {
+      transform: scale(1.01);
+      box-shadow: 0 35px 55px rgba(0, 0, 0, 0.8), 0 0 0 2px rgba(255, 215, 0, 0.4) inset;
+    }
+
+    /* inner structure with padding */
+    .card-inner {
+      padding: 2rem 2rem 1.8rem 2rem;
+    }
+
+    /* 4D handshake + mobile screen emerging zone */
+    .ar-showcase {
+      background: rgba(10, 20, 30, 0.6);
+      backdrop-filter: blur(4px);
+      border-radius: 2rem;
+      margin-bottom: 2rem;
+      padding: 1rem;
+      border: 1px solid rgba(0, 255, 255, 0.25);
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5), 0 0 12px rgba(0, 212, 255, 0.3);
+      transition: all 0.2s;
+    }
+
+    /* The mobile-frame + handshake container */
+    .phone-stage {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 1200px;
+      min-height: 310px;
+    }
+
+    /* Mobile device mockup — sleek glass */
+    .mobile-device {
+      background: #101214;
+      width: 260px;
+      height: 500px;
+      border-radius: 36px;
+      box-shadow: 0 20px 35px rgba(0,0,0,0.5), 0 0 0 3px rgba(255,215,0,0.3), 0 0 0 8px rgba(30,30,40,0.8);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(2px);
+      transition: all 0.2s;
+    }
+
+    .screen {
+      background: radial-gradient(circle at 30% 20%, #0a1428, #01040c);
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Holographic handshake animation container (emerging out of screen) */
+    .handshake-3d {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      transform-style: preserve-3d;
+      animation: floatDepth 3s infinite ease-in-out;
+    }
+
+    /* left hand (person A) and right hand (extended from mobile) */
+    .hand {
+      width: 95px;
+      height: 95px;
+      background: radial-gradient(ellipse at 35% 40%, #e0cba0, #b5966f);
+      border-radius: 45% 45% 35% 35%;
+      position: relative;
+      box-shadow: 0 12px 20px rgba(0,0,0,0.3), 0 0 8px rgba(255,235,140,0.8);
+      transition: transform 0.2s;
+      transform-style: preserve-3d;
+    }
+
+    /* fingers detail using pseudo */
+    .hand::before, .hand::after {
+      content: "";
+      position: absolute;
+      background: radial-gradient(ellipse, #f3e0b0, #c7a252);
+      border-radius: 30%;
+    }
+
+    .hand.left-hand {
+      transform: rotate(-5deg) translateZ(15px);
+    }
+    .hand.right-hand {
+      transform: rotate(8deg) translateZ(25px) translateX(-5px);
+      background: radial-gradient(ellipse at 60% 50%, #ffdc97, #cf9f48);
+      box-shadow: 0 0 20px rgba(255,200,0,0.6);
+      animation: handShakePulse 1.8s infinite alternate;
+    }
+
+    /* Animation for handshake subtle movement (4D effect) */
+    @keyframes handShakePulse {
+      0% {
+        transform: rotate(5deg) translateZ(20px) translateX(-3px);
+      }
+      100% {
+        transform: rotate(12deg) translateZ(35px) translateX(5px);
+      }
+    }
+
+    @keyframes floatDepth {
+      0% { transform: translateZ(5px) translateY(0px); }
+      50% { transform: translateZ(25px) translateY(-5px); }
+      100% { transform: translateZ(5px) translateY(0px); }
+    }
+
+    /* additional 4D glowing particles around hands */
+    .glow-particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 4;
+    }
+    .particle {
+      position: absolute;
+      background: rgba(0, 255, 255, 0.7);
+      border-radius: 50%;
+      filter: blur(3px);
+      animation: particleDrift 2.5s infinite alternate;
+    }
+
+    @keyframes particleDrift {
+      0% { opacity: 0.2; transform: translateX(0) translateY(0) scale(1);}
+      100% { opacity: 0.9; transform: translateX(15px) translateY(-15px) scale(1.4);}
+    }
+
+    /* text inside screen (digital card preview) */
+    .screen-card-preview {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 10px 12px;
+      border: 1px solid gold;
+      font-size: 10px;
+      font-weight: 500;
+      color: #ffefb9;
+      text-align: center;
+      font-family: monospace;
+      letter-spacing: 0.5px;
+    }
+
+    /* holographic badge */
+    .badge-4d {
+      position: absolute;
+      top: -12px;
+      right: 20px;
+      background: linear-gradient(135deg, #00c9ff, #92fe9e);
+      padding: 0.2rem 0.9rem;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #000;
+      box-shadow: 0 0 10px cyan;
+      backdrop-filter: blur(4px);
+      letter-spacing: 1px;
+    }
+
+    /* professional info area */
+    .professional-info {
+      text-align: center;
+      margin: 1rem 0 1rem 0;
+    }
+    .name {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #FFFFFF, #FFD966, #FFB347);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.3rem;
+    }
+    .title {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #b9d0ff;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border-top: 1px solid rgba(255,215,0,0.4);
+      border-bottom: 1px solid rgba(255,215,0,0.4);
+      display: inline-block;
+      padding: 0.3rem 1rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .contact-details {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.8rem;
+      margin: 1.5rem 0 1rem;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,245,0.03);
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      backdrop-filter: blur(10px);
+      border: 0.5px solid rgba(255,215,0,0.4);
+      transition: all 0.2s;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #eef4ff;
+    }
+    .contact-item:hover {
+      border-color: gold;
+      background: rgba(255,215,0,0.1);
+      transform: scale(1.02);
+    }
+
+    .qr-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.6rem;
+      padding-top: 1rem;
+      border-top: 1px dashed rgba(0, 255, 255, 0.3);
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .qr-code {
+      background: #fef9e6;
+      width: 70px;
+      height: 70px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: bold;
+      background: repeating-linear-gradient(45deg, #000 0px, #000 6px, #fff 6px, #fff 12px);
+      background-size: 14px 14px;
+      border: 2px solid gold;
+      box-shadow: 0 0 12px rgba(0,255,255,0.6);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .qr-code span {
+      background: rgba(0,0,0,0.6);
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 30px;
+      color: gold;
+      font-weight: 800;
+    }
+    .ar-text {
+      flex: 1;
+      font-size: 0.75rem;
+      color: #acd5ff;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      background: rgba(0, 30, 40, 0.6);
+      padding: 8px 12px;
+      border-radius: 20px;
+      backdrop-filter: blur(4px);
+    }
+    .ar-text strong {
+      color: #FFE484;
+    }
+
+    .nfc-badge {
+      background: rgba(0,0,0,0.5);
+      border-radius: 30px;
+      padding: 4px 10px;
+      font-size: 10px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 8px;
+    }
+
+    button.trigger-ar {
+      background: none;
+      border: none;
+      color: cyan;
+      cursor: pointer;
+    }
+
+    /* responsive */
+    @media (max-width: 650px) {
+      .card-inner {
+        padding: 1.2rem;
+      }
+      .mobile-device {
+        width: 200px;
+        height: 380px;
+      }
+      .hand {
+        width: 70px;
+        height: 70px;
+      }
+      .contact-details {
+        gap: 0.8rem;
+      }
+      .contact-item {
+        padding: 0.2rem 0.7rem;
+        font-size: 0.7rem;
+      }
+      .name {
+        font-size: 1.5rem;
+      }
+    }
+
+    @keyframes depthGlow {
+      0% { text-shadow: 0 0 2px cyan; }
+      100% { text-shadow: 0 0 12px cyan, 0 0 5px gold; }
+    }
+
+    .hologram-badge {
+      font-size: 0.65rem;
+      background: rgba(0,0,0,0.5);
+      display: inline-block;
+      border-radius: 50px;
+      padding: 0.2rem 0.8rem;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+
+<div class="business-card">
+  <div class="card-inner">
+    
+    <!-- 4D AR Showcase Section: handshake emerging from mobile screen -->
+    <div class="ar-showcase">
+      <div style="position: relative;">
+        <span class="badge-4d">⚡ 4D+ LIVE HAND · AR READY</span>
+      </div>
+      <div class="phone-stage">
+        <!-- Mobile phone mockup -->
+        <div class="mobile-device">
+          <div class="screen">
+            <!-- Holographic handshake animation inside screen + breaking out effect visually -->
+            <div class="handshake-3d">
+              <!-- left hand (inside screen, but emerging illusion) -->
+              <div class="hand left-hand"></div>
+              <!-- right hand (coming forward = 4D depth) -->
+              <div class="hand right-hand"></div>
+            </div>
+            <!-- particle glow system for 4D depth illusion -->
+            <div class="glow-particles" id="particleContainer"></div>
+            <!-- simulated business card preview inside mobile -->
+            <div class="screen-card-preview">
+              <span>✦ ALEX MERCER · Digital Vision ✦</span><br>
+              <span style="font-size:8px;">tap to activate immersive handshake</span>
+            </div>
+          </div>
+        </div>
+        <!-- extra depth effect: floating holographic lines coming from screen -->
+        <div style="position: absolute; top: 40%; left: 75%; width: 50px; height: 2px; background: rgba(0,255,255,0.6); transform: rotate(25deg); filter: blur(2px); box-shadow: 0 0 10px cyan;"></div>
+        <div style="position: absolute; bottom: 20%; left: 10%; width: 35px; height: 35px; border-radius: 50%; background: radial-gradient(circle, cyan, transparent); opacity: 0.6; filter: blur(5px);"></div>
+      </div>
+      <div style="text-align: center; font-size: 11px; margin-top: 12px; color: #7fc9ff; letter-spacing: 1px;">
+        👉 HOVER OR TOUCH HANDSHAKE — 4D DEPTH ANIMATION
+      </div>
+    </div>
+
+    <!-- professional details -->
+    <div class="professional-info">
+      <div class="name">ALEX MERCER</div>
+      <div class="title">DIRECTOR OF DIGITAL INNOVATION</div>
+      <div class="contact-details">
+        <div class="contact-item">📧 a.mercer@nexusinnovate.com</div>
+        <div class="contact-item">📞 +1 (555) 827-4901</div>
+        <div class="contact-item">🌐 nexusinnovate.com/am</div>
+      </div>
+    </div>
+
+    <!-- QR + AR description + NFC hint -->
+    <div class="qr-section">
+      <div class="qr-code" id="dynamicQR" aria-label="Scan to trigger AR handshake">
+        <span>📱 AR</span>
+      </div>
+      <div class="ar-text">
+        <strong>✨ 4D handshake experience</strong><br>
+        Scan this card with your mobile camera → watch the handshake <strong>emerge from screen</strong> in augmented reality. <br>
+        <span style="font-size: 10px;">🔷 Compatible with WebAR · Tap NFC chip for instant contact sync.</span>
+      </div>
+      <div class="nfc-badge">
+        💠 NFC embedded | tap to connect
+      </div>
+    </div>
+
+    <!-- extra holographic footer for digital edge -->
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 20px;">
+      <div style="font-size: 9px; color: rgba(255,215,0,0.7); letter-spacing: 1px;">4D+ CERTIFIED · HOLOGRAPHIC INTERFACE</div>
+      <div style="font-size: 10px; background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 20px; color: #FFE5A3;">
+        <span style="font-weight:800;">HANDSHAKE OUT OF SCREEN</span> 👥
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- small script for interactive particles, depth effect, dynamic handshake response -->
+<script>
+  (function() {
+    // create dynamic floating particles for 4D magic
+    const particleContainer = document.getElementById('particleContainer');
+    if (particleContainer) {
+      for(let i = 0; i < 18; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        const size = Math.random() * 8 + 2;
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 3 + 's';
+        particle.style.animationDuration = Math.random() * 2 + 1.8 + 's';
+        particle.style.background = `radial-gradient(circle, rgba(0,255,255,0.8), rgba(255,215,0,0.5))`;
+        particleContainer.appendChild(particle);
+      }
+    }
+
+    // get the handshake elements to enhance interactive "out of screen" sensation on hover/tap
+    const rightHand = document.querySelector('.hand.right-hand');
+    const leftHand = document.querySelector('.hand.left-hand');
+    const phoneStage = document.querySelector('.phone-stage');
+    
+    // Function to trigger more intense depth effect (simulate 4D coming forward)
+    function trigger4DHandshake() {
+      if (rightHand) {
+        rightHand.style.animation = 'none';
+        rightHand.style.transform = 'rotate(18deg) translateZ(55px) translateX(12px) scale(1.05)';
+        setTimeout(() => {
+          rightHand.style.animation = 'handShakePulse 1.8s infinite alternate';
+          rightHand.style.transform = '';
+        }, 400);
+      }
+      if (leftHand) {
+        leftHand.style.transform = 'rotate(-12deg) translateZ(25px) scale(1.02)';
+        setTimeout(() => {
+          leftHand.style.transform = '';
+        }, 400);
+      }
+      // simulate depth particle burst
+      const burstDiv = document.createElement('div');
+      burstDiv.style.position = 'absolute';
+      burstDiv.style.top = '50%';
+      burstDiv.style.left = '50%';
+      burstDiv.style.width = '120px';
+      burstDiv.style.height = '120px';
+      burstDiv.style.background = 'radial-gradient(circle, rgba(0,255,255,0.6), transparent)';
+      burstDiv.style.borderRadius = '50%';
+      burstDiv.style.transform = 'translate(-50%, -50%)';
+      burstDiv.style.pointerEvents = 'none';
+      burstDiv.style.zIndex = '99';
+      burstDiv.style.filter = 'blur(10px)';
+      burstDiv.style.animation = 'fadeOutScale 0.6s forwards';
+      if (phoneStage) phoneStage.appendChild(burstDiv);
+      setTimeout(() => { if(burstDiv && burstDiv.remove) burstDiv.remove(); }, 600);
+    }
+
+    // add keyframe animation for burst
+    if (!document.querySelector('#dynamicKeyframeStyle')) {
+      const styleSheet = document.createElement('style');
+      styleSheet.id = 'dynamicKeyframeStyle';
+      styleSheet.textContent = `
+        @keyframes fadeOutScale {
+          0% { opacity: 0.9; transform: translate(-50%, -50%) scale(0.3);}
+          100% { opacity: 0; transform: translate(-50%, -50%) scale(1.8);}
+        }
+        .hand.right-hand {
+          transition: transform 0.25s cubic-bezier(0.2, 1.2, 0.4, 1);
+        }
+        .hand.left-hand {
+          transition: transform 0.25s ease;
+        }
+        .mobile-device {
+          transition: all 0.2s ease;
+        }
+        .business-card:active .handshake-3d {
+          transform: translateZ(30px) scale(1.02);
+        }
+      `;
+      document.head.appendChild(styleSheet);
+    }
+
+    // Attach event listeners to right-hand or whole ar-showcase to simulate AR handshake emerging
+    if (rightHand) {
+      rightHand.addEventListener('click', (e) => {
+        e.stopPropagation();
+        trigger4DHandshake();
+      });
+      rightHand.addEventListener('mouseenter', () => {
+        rightHand.style.filter = 'drop-shadow(0 0 12px gold)';
+        leftHand.style.filter = 'drop-shadow(0 0 8px cyan)';
+      });
+      rightHand.addEventListener('mouseleave', () => {
+        rightHand.style.filter = '';
+        leftHand.style.filter = '';
+      });
+    }
+    if (leftHand) {
+      leftHand.addEventListener('click', () => {
+        trigger4DHandshake();
+      });
+    }
+    // Additional effect: click on QR code to simulate AR trigger (handshake out of screen)
+    const qrElement = document.getElementById('dynamicQR');
+    if (qrElement) {
+      qrElement.addEventListener('click', () => {
+        trigger4DHandshake();
+        // visual feedback on qr
+        qrElement.style.transform = 'scale(0.95)';
+        setTimeout(() => { if(qrElement) qrElement.style.transform = ''; }, 150);
+        // show tooltip-like notification
+        const msg = document.createElement('div');
+        msg.innerText = '🤝 AR Handshake activated! 4D emerging from mobile';
+        msg.style.position = 'fixed';
+        msg.style.bottom = '20px';
+        msg.style.left = '50%';
+        msg.style.transform = 'translateX(-50%)';
+        msg.style.backgroundColor = '#000000cc';
+        msg.style.color = 'gold';
+        msg.style.padding = '10px 20px';
+        msg.style.borderRadius = '40px';
+        msg.style.fontSize = '12px';
+        msg.style.fontWeight = 'bold';
+        msg.style.backdropFilter = 'blur(12px)';
+        msg.style.zIndex = '1000';
+        msg.style.border = '1px solid cyan';
+        msg.style.fontFamily = 'Inter, sans-serif';
+        document.body.appendChild(msg);
+        setTimeout(() => msg.remove(), 2000);
+      });
+    }
+
+    // Enhance depth: add subtle parallax to handshake on mousemove over card
+    const card = document.querySelector('.business-card');
+    const handshakeContainer = document.querySelector('.handshake-3d');
+    if (card && handshakeContainer) {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        const rotateY = x * 5;
+        const rotateX = y * -4;
+        handshakeContainer.style.transform = `perspective(600px) translateZ(10px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        if (handshakeContainer) handshakeContainer.style.transform = '';
+      });
+    }
+
+    // On load, give small 4D depth pulse greeting
+    setTimeout(() => {
+      trigger4DHandshake();
+    }, 500);
+    
+    // additional dynamic update: simulate "out of screen" text effect
+    const screenPreviewDiv = document.querySelector('.screen-card-preview');
+    if(screenPreviewDiv) {
+      setInterval(() => {
+        if(Math.random() > 0.7) {
+          screenPreviewDiv.style.boxShadow = '0 0 10px rgba(0,255,255,0.6)';
+          setTimeout(() => { if(screenPreviewDiv) screenPreviewDiv.style.boxShadow = ''; }, 300);
+        }
+      }, 2000);
+    }
+  })();
+</script>
+</body>
+</html>

@@ -1,1 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Hologram Canvas | Blank Template</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at 10% 20%, #050b14, #000000);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      padding: 1.5rem;
+      overflow: hidden;
+      cursor: default;
+      position: relative;
+    }
+
+    /* Ambient background lighting elements */
+    .ambient-glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(0, 255, 255, 0.08), transparent 70%);
+      top: 20%;
+      left: 15%;
+      pointer-events: none;
+      filter: blur(80px);
+    }
+
+    .ambient-glow-2 {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(240, 0, 255, 0.05), transparent 70%);
+      bottom: 10%;
+      right: 10%;
+      pointer-events: none;
+      filter: blur(100px);
+    }
+
+    /* Holographic particle canvas */
+    .diffraction-field {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .holo-particle {
+      position: absolute;
+      background: radial-gradient(circle, #0ff, #f0f);
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      filter: blur(2px);
+      animation: holoDrift 3s infinite alternate;
+      opacity: 0.7;
+      will-change: transform, opacity;
+    }
+
+    @keyframes holoDrift {
+      0% { transform: translateX(0) translateY(0) scale(1); opacity: 0.2; }
+      100% { transform: translateX(25px) translateY(-20px) scale(1.6); opacity: 0.9; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow"></div>
+  <div class="ambient-glow-2"></div>
+  <div class="diffraction-field" id="particleField"></div>
+
+<script>
+  (function() {
+    // Keep particle field generation intact for the blank space
+    const particleField = document.getElementById('particleField');
+    if (particleField) {
+      for (let i = 0; i < 45; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('holo-particle');
+        const size = Math.random() * 6 + 2;
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 4 + 's';
+        particle.style.animationDuration = Math.random() * 3 + 2 + 's';
+        
+        // Randomize between cyan, magenta, and gold light tints
+        const roll = Math.random();
+        if (roll > 0.6) {
+          particle.style.background = 'radial-gradient(circle, #0ffff, rgba(0,255,255,0.2))';
+        } else if (roll > 0.3) {
+          particle.style.background = 'radial-gradient(circle, #f0f, rgba(240,0,255,0.2))';
+        } else {
+          particle.style.background = 'radial-gradient(circle, #ffbc4a, rgba(255,188,74,0.2))';
+        }
+        
+        particleField.appendChild(particle);
+      }
+    }
+  })();
+</script>
+</body>
+</html>
 

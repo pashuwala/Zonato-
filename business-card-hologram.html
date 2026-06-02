@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Zonato Solar - Holographic Business Card</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at 10% 20%, #050b14, #000000);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      padding: 2rem;
+      overflow: hidden;
+      cursor: default;
+      position: relative;
+    }
+
+    /* Ambient background lighting */
+    .ambient-glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255, 180, 0, 0.15), transparent 70%);
+      top: 10%;
+      left: 10%;
+      pointer-events: none;
+      filter: blur(100px);
+      animation: ambientPulse 6s ease-in-out infinite;
+    }
+
+    .ambient-glow-2 {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(0, 255, 200, 0.12), transparent 70%);
+      bottom: 5%;
+      right: 5%;
+      pointer-events: none;
+      filter: blur(120px);
+      animation: ambientPulse 8s ease-in-out infinite reverse;
+    }
+
+    @keyframes ambientPulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* 3D Perspective Container */
+    .card-scene {
+      perspective: 1200px;
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 500px;
+      height: 320px;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .card-scene:active {
+      cursor: grabbing;
+    }
+
+    /* Main Card with 3D Transform */
+    .hologram-card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease-out;
+      filter: drop-shadow(0 20px 60px rgba(255, 215, 0, 0.2)) drop-shadow(0 0 40px rgba(0, 255, 200, 0.1));
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(5, 11, 20, 0.95), rgba(10, 20, 35, 0.95));
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      overflow: hidden;
+      transform-style: preserve-3d;
+      box-shadow: 
+        inset 0 0 30px rgba(255, 215, 0, 0.1),
+        inset -30px -30px 60px rgba(0, 0, 0, 0.5),
+        0 0 50px rgba(255, 215, 0, 0.2);
+    }
+
+    /* Holographic overlay layers */
+    .holo-layer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      top: 0;
+      left: 0;
+    }
+
+    .holo-gradient-1 {
+      background: linear-gradient(45deg, rgba(255, 215, 0, 0.1), transparent 50%);
+      animation: holoShift1 8s ease infinite;
+    }
+
+    .holo-gradient-2 {
+      background: linear-gradient(135deg, transparent 30%, rgba(0, 255, 200, 0.08), transparent 70%);
+      animation: holoShift2 10s ease infinite;
+    }
+
+    .holo-gradient-3 {
+      background: radial-gradient(circle at 20% 80%, rgba(255, 180, 0, 0.1), transparent 40%);
+      animation: holoShift3 12s ease infinite;
+    }
+
+    @keyframes holoShift1 {
+      0%, 100% { transform: translateX(-100%) translateY(0); }
+      50% { transform: translateX(100%) translateY(-20px); }
+    }
+
+    @keyframes holoShift2 {
+      0%, 100% { transform: translateY(100%); }
+      50% { transform: translateY(-100%); }
+    }
+
+    @keyframes holoShift3 {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.2) rotate(180deg); }
+    }
+
+    /* Diffraction effect */
+    .diffraction-effect {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: 
+        repeating-linear-gradient(
+          0deg,
+          rgba(0, 255, 200, 0.03) 0px,
+          rgba(0, 255, 200, 0.03) 2px,
+          transparent 2px,
+          transparent 4px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          rgba(255, 215, 0, 0.02) 0px,
+          rgba(255, 215, 0, 0.02) 1px,
+          transparent 1px,
+          transparent 2px
+        );
+      animation: diffractionScan 4s linear infinite;
+    }
+
+    @keyframes diffractionScan {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+
+    /* Particle field */
+    .particle-field {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .holo-particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* Card Content */
+    .card-content {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      height: 100%;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transform-style: preserve-3d;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      transform: translateZ(20px);
+    }
+
+    .logo-icon {
+      font-size: 2.5rem;
+      filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
+      animation: logoFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0) rotateZ(0deg); }
+      50% { transform: translateY(-8px) rotateZ(5deg); }
+    }
+
+    .company-name {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffd700, #00ffc8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    }
+
+    .divider {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #00ffc8, transparent);
+      margin: 15px 0;
+      transform: translateZ(15px);
+    }
+
+    .card-details {
+      transform: translateZ(18px);
+    }
+
+    .detail-row {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .detail-label {
+      color: #00ffc8;
+      font-weight: 600;
+      min-width: 60px;
+    }
+
+    .card-footer {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      transform: translateZ(20px);
+    }
+
+    .icon-button {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      border: 2px solid #00ffc8;
+      background: rgba(0, 255, 200, 0.1);
+      color: #00ffc8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.8rem;
+      box-shadow: 0 0 10px rgba(0, 255, 200, 0.3);
+    }
+
+    .icon-button:hover {
+      background: rgba(0, 255, 200, 0.2);
+      box-shadow: 0 0 20px rgba(0, 255, 200, 0.6);
+      transform: scale(1.1) translateZ(10px);
+    }
+
+    /* Light reflection effect */
+    .light-reflection {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 8;
+    }
+
+    /* Controls */
+    .controls {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 20;
+    }
+
+    .control-text {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      letter-spacing: 1px;
+    }
+
+    .reset-button {
+      margin-top: 1rem;
+      padding: 0.7rem 2rem;
+      background: linear-gradient(135deg, #ffd700, #ffb400);
+      color: #000;
+      border: none;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    }
+
+    .reset-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .card-scene {
+        max-width: 100%;
+        height: 280px;
+      }
+
+      .card-content {
+        padding: 30px;
+      }
+
+      .company-name {
+        font-size: 1.4rem;
+      }
+
+      .detail-row {
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Glow effect on interaction */
+    .card-glow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      background: radial-gradient(circle at center, rgba(0, 255, 200, 0.2), transparent 70%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .hologram-card:hover .card-glow {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow"></div>
+  <div class="ambient-glow-2"></div>
+
+  <div class="card-scene" id="cardScene">
+    <div class="hologram-card" id="holoCard">
+      <div class="card-inner">
+        <!-- Holographic overlay layers -->
+        <div class="holo-layer holo-gradient-1"></div>
+        <div class="holo-layer holo-gradient-2"></div>
+        <div class="holo-layer holo-gradient-3"></div>
+        <div class="diffraction-effect"></div>
+        <div class="particle-field" id="particleField"></div>
+        <div class="light-reflection"></div>
+
+        <!-- Card Content -->
+        <div class="card-content">
+          <div class="card-header">
+            <div class="logo-icon">☀️</div>
+            <div class="company-name">ZONATO</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="card-details">
+            <div class="detail-row">
+              <span class="detail-label">CEO:</span>
+              <span>Renewable Visionary</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Email:</span>
+              <span>hello@zonato.solar</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Phone:</span>
+              <span>+1 (555) 123-4567</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Web:</span>
+              <span>zonato.solar</span>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <button class="icon-button" title="LinkedIn">in</button>
+            <button class="icon-button" title="Twitter">𝕏</button>
+            <button class="icon-button" title="Website">⌗</button>
+          </div>
+        </div>
+      </div>
+      <div class="card-glow"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="control-text">MOVE YOUR MOUSE OVER THE CARD</div>
+    <button class="reset-button" id="resetBtn">RESET POSITION</button>
+  </div>
+
+  <script>
+    class HolographicCard {
+      constructor() {
+        this.card = document.getElementById('holoCard');
+        this.scene = document.getElementById('cardScene');
+        this.particleField = document.getElementById('particleField');
+        this.resetBtn = document.getElementById('resetBtn');
+        
+        this.rotationX = 0;
+        this.rotationY = 0;
+        this.targetRotationX = 0;
+        this.targetRotationY = 0;
+        this.mouse = { x: 0, y: 0 };
+        
+        this.init();
+      }
+
+      init() {
+        this.generateParticles();
+        this.setupEventListeners();
+        this.animate();
+      }
+
+      generateParticles() {
+        for (let i = 0; i < 60; i++) {
+          const particle = document.createElement('div');
+          particle.classList.add('holo-particle');
+          
+          const size = Math.random() * 4 + 1;
+          particle.style.width = size + 'px';
+          particle.style.height = size + 'px';
+          particle.style.left = Math.random() * 100 + '%';
+          particle.style.top = Math.random() * 100 + '%';
+          
+          // Random color
+          const colors = [
+            'rgba(255, 215, 0, 0.6)',
+            'rgba(0, 255, 200, 0.6)',
+            'rgba(255, 180, 0, 0.6)',
+            'rgba(255, 255, 255, 0.4)'
+          ];
+          particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+          
+          // Random animation
+          particle.style.animation = `float${Math.floor(Math.random() * 3) + 1} ${Math.random() * 3 + 2}s infinite`;
+          particle.style.animationDelay = Math.random() * 2 + 's';
+          particle.style.boxShadow = `0 0 ${Math.random() * 8 + 4}px ${colors[Math.floor(Math.random() * colors.length)]}`;
+          
+          this.particleField.appendChild(particle);
+        }
+
+        // Add particle animations to stylesheet
+        const style = document.createElement('style');
+        style.textContent = `
+          @keyframes float1 {
+            0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.3; }
+            50% { transform: translateY(-20px) translateX(10px) scale(1.2); opacity: 0.8; }
+          }
+          @keyframes float2 {
+            0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.5; }
+            50% { transform: translateY(-15px) translateX(-8px) scale(1.1); opacity: 0.9; }
+          }
+          @keyframes float3 {
+            0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.4; }
+            50% { transform: translateY(-25px) translateX(15px) scale(1.3); opacity: 0.7; }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+      setupEventListeners() {
+        this.scene.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+        this.scene.addEventListener('mouseleave', (e) => this.handleMouseLeave(e));
+        this.resetBtn.addEventListener('click', () => this.reset());
+      }
+
+      handleMouseMove(e) {
+        const rect = this.scene.getBoundingClientRect();
+        this.mouse.x = (e.clientX - rect.left) / rect.width;
+        this.mouse.y = (e.clientY - rect.top) / rect.height;
+
+        // Calculate rotation based on mouse position
+        this.targetRotationY = (this.mouse.x - 0.5) * 35;
+        this.targetRotationX = (0.5 - this.mouse.y) * 35;
+      }
+
+      handleMouseLeave() {
+        this.targetRotationX = 0;
+        this.targetRotationY = 0;
+      }
+
+      reset() {
+        this.targetRotationX = 0;
+        this.targetRotationY = 0;
+      }
+
+      animate() {
+        // Smooth interpolation
+        this.rotationX += (this.targetRotationX - this.rotationX) * 0.1;
+        this.rotationY += (this.targetRotationY - this.rotationY) * 0.1;
+
+        // Apply 3D transform
+        this.card.style.transform = `rotateX(${this.rotationX}deg) rotateY(${this.rotationY}deg)`;
+
+        requestAnimationFrame(() => this.animate());
+      }
+    }
+
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      new HolographicCard();
+    });
+  </script>
+
+</body>
+</html>

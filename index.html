@@ -1,1 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Zonato Solar - Holographic Business Card</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at 10% 20%, #050b14, #000000);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      padding: 2rem;
+      overflow: hidden;
+      cursor: default;
+      position: relative;
+    }
+
+    /* Navigation Bar */
+    .navbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      background: rgba(5, 11, 20, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffd700, #00ffc8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 1px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.8);
+      transition: all 0.3s ease;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      position: relative;
+    }
+
+    .nav-links a:hover {
+      color: #00ffc8;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(135deg, #ffd700, #00ffc8);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-links a.active {
+      color: #ffd700;
+    }
+
+    .nav-links a.active::after {
+      width: 100%;
+    }
+
+    /* Ambient background lighting */
+    .ambient-glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255, 180, 0, 0.15), transparent 70%);
+      top: 10%;
+      left: 10%;
+      pointer-events: none;
+      filter: blur(100px);
+      animation: ambientPulse 6s ease-in-out infinite;
+    }
+
+    .ambient-glow-2 {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(0, 255, 200, 0.12), transparent 70%);
+      bottom: 5%;
+      right: 5%;
+      pointer-events: none;
+      filter: blur(120px);
+      animation: ambientPulse 8s ease-in-out infinite reverse;
+    }
+
+    @keyframes ambientPulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* 3D Perspective Container */
+    .card-scene {
+      perspective: 1200px;
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 500px;
+      height: 380px;
+      cursor: grab;
+      user-select: none;
+      margin-top: 60px;
+    }
+
+    .card-scene:active {
+      cursor: grabbing;
+    }
+
+    /* Main Card with 3D Transform */
+    .hologram-card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease-out;
+      filter: drop-shadow(0 20px 60px rgba(255, 215, 0, 0.2)) drop-shadow(0 0 40px rgba(0, 255, 200, 0.1));
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(5, 11, 20, 0.95), rgba(10, 20, 35, 0.95));
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      overflow: hidden;
+      transform-style: preserve-3d;
+      box-shadow: 
+        inset 0 0 30px rgba(255, 215, 0, 0.1),
+        inset -30px -30px 60px rgba(0, 0, 0, 0.5),
+        0 0 50px rgba(255, 215, 0, 0.2);
+    }
+
+    /* Holographic overlay layers */
+    .holo-layer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      top: 0;
+      left: 0;
+    }
+
+    .holo-gradient-1 {
+      background: linear-gradient(45deg, rgba(255, 215, 0, 0.1), transparent 50%);
+      animation: holoShift1 8s ease infinite;
+    }
+
+    .holo-gradient-2 {
+      background: linear-gradient(135deg, transparent 30%, rgba(0, 255, 200, 0.08), transparent 70%);
+      animation: holoShift2 10s ease infinite;
+    }
+
+    .holo-gradient-3 {
+      background: radial-gradient(circle at 20% 80%, rgba(255, 180, 0, 0.1), transparent 40%);
+      animation: holoShift3 12s ease infinite;
+    }
+
+    @keyframes holoShift1 {
+      0%, 100% { transform: translateX(-100%) translateY(0); }
+      50% { transform: translateX(100%) translateY(-20px); }
+    }
+
+    @keyframes holoShift2 {
+      0%, 100% { transform: translateY(100%); }
+      50% { transform: translateY(-100%); }
+    }
+
+    @keyframes holoShift3 {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.2) rotate(180deg); }
+    }
+
+    /* Diffraction effect */
+    .diffraction-effect {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: 
+        repeating-linear-gradient(
+          0deg,
+          rgba(0, 255, 200, 0.03) 0px,
+          rgba(0, 255, 200, 0.03) 2px,
+          transparent 2px,
+          transparent 4px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          rgba(255, 215, 0, 0.02) 0px,
+          rgba(255, 215, 0, 0.02) 1px,
+          transparent 1px,
+          transparent 2px
+        );
+      animation: diffractionScan 4s linear infinite;
+    }
+
+    @keyframes diffractionScan {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+
+    /* Particle field */
+    .particle-field {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .holo-particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* Card Content */
+    .card-content {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      height: 100%;
+      padding: 35px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transform-style: preserve-3d;
+      overflow-y: auto;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      transform: translateZ(20px);
+      margin-bottom: 8px;
+    }
+
+    .logo-icon {
+      font-size: 2.5rem;
+      filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
+      animation: logoFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0) rotateZ(0deg); }
+      50% { transform: translateY(-8px) rotateZ(5deg); }
+    }
+
+    .company-name {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffd700, #00ffc8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    }
+
+    .divider {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #00ffc8, transparent);
+      margin: 12px 0 16px 0;
+      transform: translateZ(15px);
+    }
+
+    .card-details {
+      transform: translateZ(18px);
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .detail-row {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.85);
+      margin: 10px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      letter-spacing: 0.3px;
+      line-height: 1.4;
+    }
+
+    .detail-icon {
+      color: #00ffc8;
+      font-size: 1.2rem;
+      min-width: 24px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-shadow: 0 0 8px rgba(0, 255, 200, 0.3);
+      margin-top: 2px;
+    }
+
+    .detail-value {
+      word-break: break-word;
+      flex: 1;
+      font-weight: 400;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .detail-value-title {
+      font-weight: 700;
+      color: rgba(255, 215, 0, 0.9);
+      font-size: 0.88rem;
+    }
+
+    .detail-value-subtitle {
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.80rem;
+    }
+
+    /* Clickable contact links */
+    .contact-link {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .contact-link:hover {
+      color: #00ffc8;
+      text-shadow: 0 0 8px rgba(0, 255, 200, 0.5);
+    }
+
+    .contact-link-phone {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .contact-link-phone:hover {
+      color: #00ffc8;
+    }
+
+    .contact-link-email {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .contact-link-email:hover {
+      color: #00ffc8;
+    }
+
+    .contact-link-website {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .contact-link-website:hover {
+      color: #00ffc8;
+    }
+
+    .card-footer {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      transform: translateZ(20px);
+      margin-top: 12px;
+      align-items: center;
+    }
+
+    .icon-button {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid #00ffc8;
+      background: rgba(0, 255, 200, 0.1);
+      color: #00ffc8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      font-size: 0.65rem;
+      box-shadow: 0 0 12px rgba(0, 255, 200, 0.2);
+      text-decoration: none;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    .icon-button:hover {
+      background: rgba(0, 255, 200, 0.2);
+      box-shadow: 0 0 20px rgba(0, 255, 200, 0.6);
+      transform: scale(1.15) translateZ(10px);
+      border-color: #00ffc8;
+    }
+
+    .icon-button svg {
+      width: 14px;
+      height: 14px;
+      stroke-width: 1.5;
+    }
+
+    /* Light reflection effect */
+    .light-reflection {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 8;
+    }
+
+    /* Controls */
+    .controls {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 20;
+    }
+
+    .control-text {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.95rem;
+      margin-top: 1rem;
+      letter-spacing: 1.2px;
+      font-weight: 500;
+    }
+
+    .reset-button {
+      margin-top: 0.8rem;
+      padding: 0.6rem 1.8rem;
+      background: linear-gradient(135deg, #ffd700, #ffb400);
+      color: #000;
+      border: none;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+    }
+
+    .reset-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+      background: linear-gradient(135deg, #ffec00, #ffc700);
+    }
+
+    .reset-button:active {
+      transform: translateY(-1px);
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .navbar {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+      }
+
+      .nav-links {
+        gap: 1rem;
+      }
+
+      .card-scene {
+        max-width: 100%;
+        height: 360px;
+        margin-top: 100px;
+      }
+
+      .card-content {
+        padding: 25px;
+      }
+
+      .company-name {
+        font-size: 1.4rem;
+      }
+
+      .detail-row {
+        font-size: 0.8rem;
+      }
+
+      .detail-value-subtitle {
+        font-size: 0.75rem;
+      }
+
+      .icon-button {
+        width: 26px;
+        height: 26px;
+      }
+
+      .icon-button svg {
+        width: 12px;
+        height: 12px;
+      }
+
+      .reset-button {
+        padding: 0.5rem 1.5rem;
+        font-size: 0.75rem;
+      }
+    }
+
+    /* Glow effect on interaction */
+    .card-glow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      background: radial-gradient(circle at center, rgba(0, 255, 200, 0.2), transparent 70%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .hologram-card:hover .card-glow {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-logo">☀️ ZONATO SOLAR</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="business-card-hologram.html" class="active">Business Card</a></li>
+    </ul>
+  </nav>
+
+  <div class="ambient-glow"></div>
+  <div class="ambient-glow-2"></div>
+
+  <div class="card-scene" id="cardScene">
+    <div class="hologram-card" id="holoCard">
+      <div class="card-inner">
+        <!-- Holographic overlay layers -->
+        <div class="holo-layer holo-gradient-1"></div>
+        <div class="holo-layer holo-gradient-2"></div>
+        <div class="holo-layer holo-gradient-3"></div>
+        <div class="diffraction-effect"></div>
+        <div class="particle-field" id="particleField"></div>
+        <div class="light-reflection"></div>
+
+        <!-- Card Content -->
+        <div class="card-content">
+          <div class="card-header">
+            <div class="logo-icon">☀️</div>
+            <div class="company-name">ZONATO SOLAR</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="card-details">
+            <div class="detail-row">
+              <span class="detail-icon">👤</span>
+              <span class="detail-value">
+                <span class="detail-value-title">Sharad Sharma</span>
+                <span class="detail-value-subtitle">Area Sales Manager</span>
+              </span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-icon">✉️</span>
+              <span class="detail-value">
+                <a href="mailto:info@zonatosolar.com" class="contact-link contact-link-email">info@zonatosolar.com</a>
+              </span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-icon">📱</span>
+              <span class="detail-value">
+                <a href="tel:+918982379366" class="contact-link contact-link-phone">+91 8982 379 366</a>
+              </span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-icon">🌐</span>
+              <span class="detail-value">
+                <a href="https://www.zsharad.com" class="contact-link contact-link-website" target="_blank">www.zsharad.com</a>
+              </span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-icon">📍</span>
+              <span class="detail-value">Bilaspur, Chhattisgarh, India - 495001</span>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <a href="https://wa.me/918982379366" class="icon-button" title="WhatsApp" target="_blank">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.428-1.866-1.601-2.139-.173-.272-.181-.468.12-.768.299-.3.627-.779.941-1.201.313-.422.626-.844.626-1.143 0-.298-.313-1.422-.626-2.266-.313-.844-.835-1.318-1.134-1.318H9.733c-.299 0-.835.224-1.271.66-.436.436-.835 1.047-.835 2.164 0 1.117.299 2.235.836 3.353s1.435 2.604 2.97 4.138c1.536 1.536 2.97 2.504 4.226 3.05 1.257.546 2.339.835 3.456.835 1.117 0 1.666-.285 2.265-.721.598-.436 1.047-.996 1.377-1.641.331-.645.436-1.435.0-1.614"/>
+              </svg>
+            </a>
+            <a href="https://www.linkedin.com/company/zonato-solar" class="icon-button" title="LinkedIn" target="_blank">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.475-2.236-1.986-2.236-1.081 0-1.722.722-2.004 1.418-.103.249-.129.597-.129.946v5.441h-3.554s.043-8.821 0-9.745h3.554v1.381c.43-.664.927-1.605 2.254-1.605 1.649 0 2.883 1.066 2.883 3.364v6.605zM5.337 9.341c-1.114 0-1.853-.738-1.853-1.66 0-.922.738-1.66 1.877-1.66 1.139 0 1.854.738 1.854 1.66 0 .922-.715 1.66-1.878 1.66zm1.959 10.923h-3.7V9.959h3.7v10.305zM22.224 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.224 0z"/>
+              </svg>
+            </a>
+            <a href="https://www.zsharad.com" class="icon-button" title="Website" target="_blank">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                <path d="M2 12h20"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="card-glow"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="control-text">MOVE YOUR MOUSE OVER THE CARD</div>
+    <button class="reset-button" id="resetBtn">RESET POSITION</button>
+  </div>
+
+  <script>
+    class HolographicCard {
+      constructor() {
+        this.card = document.getElementById('holoCard');
+        this.scene = document.getElementById('cardScene');
+        this.particleField = document.getElementById('particleField');
+        this.resetBtn = document.getElementById('resetBtn');
+        
+        this.rotationX = 0;
+        this.rotationY = 0;
+        this.targetRotationX = 0;
+        this.targetRotationY = 0;
+        this.mouse = { x: 0, y: 0 };
+        
+        this.init();
+      }
+
+      init() {
+        this.generateParticles();
+        this.setupEventListeners();
+        this.animate();
+      }
+
+      generateParticles() {
+        for (let i = 0; i < 60; i++) {
+          const particle = document.createElement('div');
+          particle.classList.add('holo-particle');
+          
+          const size = Math.random() * 4 + 1;
+          particle.style.width = size + 'px';
+          particle.style.height = size + 'px';
+          particle.style.left = Math.random() * 100 + '%';
+          particle.style.top = Math.random() * 100 + '%';
+          
+          // Random color
+          const colors = [
+            'rgba(255, 215, 0, 0.6)',
+            'rgba(0, 255, 200, 0.6)',
+            'rgba(255, 180, 0, 0.6)',
+            'rgba(255, 255, 255, 0.4)'
+          ];
+          particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+          
+          // Random animation
+          particle.style.animation = `float${Math.floor(Math.random() * 3) + 1} ${Math.random() * 3 + 2}s infinite`;
+          particle.style.animationDelay = Math.random() * 2 + 's';
+          particle.style.boxShadow = `0 0 ${Math.random() * 8 + 4}px ${colors[Math.floor(Math.random() * colors.length)]}`;
+          
+          this.particleField.appendChild(particle);
+        }
+
+        // Add particle animations to stylesheet
+        const style = document.createElement('style');
+        style.textContent = `
+          @keyframes float1 {
+            0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.3; }
+            50% { transform: translateY(-20px) translateX(10px) scale(1.2); opacity: 0.8; }
+          }
+          @keyframes float2 {
+            0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.5; }
+            50% { transform: translateY(-15px) translateX(-8px) scale(1.1); opacity: 0.9; }
+          }
+          @keyframes float3 {
+            0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.4; }
+            50% { transform: translateY(-25px) translateX(15px) scale(1.3); opacity: 0.7; }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+      setupEventListeners() {
+        this.scene.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+        this.scene.addEventListener('mouseleave', (e) => this.handleMouseLeave(e));
+        this.resetBtn.addEventListener('click', () => this.reset());
+      }
+
+      handleMouseMove(e) {
+        const rect = this.scene.getBoundingClientRect();
+        this.mouse.x = (e.clientX - rect.left) / rect.width;
+        this.mouse.y = (e.clientY - rect.top) / rect.height;
+
+        // Calculate rotation based on mouse position
+        this.targetRotationY = (this.mouse.x - 0.5) * 35;
+        this.targetRotationX = (0.5 - this.mouse.y) * 35;
+      }
+
+      handleMouseLeave() {
+        this.targetRotationX = 0;
+        this.targetRotationY = 0;
+      }
+
+      reset() {
+        this.targetRotationX = 0;
+        this.targetRotationY = 0;
+      }
+
+      animate() {
+        // Smooth interpolation
+        this.rotationX += (this.targetRotationX - this.rotationX) * 0.1;
+        this.rotationY += (this.targetRotationY - this.rotationY) * 0.1;
+
+        // Apply 3D transform
+        this.card.style.transform = `rotateX(${this.rotationX}deg) rotateY(${this.rotationY}deg)`;
+
+        requestAnimationFrame(() => this.animate());
+      }
+    }
+
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      new HolographicCard();
+    });
+  </script>
+
+</body>
+</html>
